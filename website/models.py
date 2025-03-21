@@ -42,6 +42,9 @@ class Product(db.Model):
     flash_sale = db.Column(db.Boolean, default=False)
     date_added = db.Column(db.DateTime(), default=datetime.now(datetime.tzname('UTC')))
 
+    carts = db.relationship('Cart', backref=db.backref('product', lazy=True))
+    orders = db.relationship('Order', backref=db.backref('product', lazy=True))
+
     def __str__(self):
         return f'<Product {self.product_name}>'
     
@@ -52,6 +55,8 @@ class Cart(db.Model):
     quantity = db.Column(db.Integer, nullable=False)
 
     customer_link = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=False)
+    product_link = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+
 
     def __str__(self):
         return f'<Cart {self.id}>'
@@ -65,6 +70,7 @@ class Order(db.Model):
     payment_id = db.Column(db.String(1000), nullable=False)
 
     customer_link = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=False)
+    product_link = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
 
 
     def __str__(self):
